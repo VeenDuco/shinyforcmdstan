@@ -1,0 +1,24 @@
+{
+    "id": "C526E2FF",
+    "path": "~/OneDrive/Werk/Programming/shinyapps/shinyforcmdstan/global.r",
+    "project_path": "global.r",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1609162672894.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "cursorPosition": "2,18",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1609175939,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1609175939355,
+    "read_only": false,
+    "read_only_alternatives": []
+}

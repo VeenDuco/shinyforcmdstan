@@ -1,0 +1,51 @@
+install.packages('rsconnect')
+library(rsconnect)
+rsconnect::setAccountInfo(name='dveen', token='12102F507CC1A0774B64AA6DD4309412', secret='exfqYuBU0A+G8cVw9IZU8eX9bwzoJDad08zHJeP6')
+rsconnect::setAccountInfo(name='mschristmas', token='0331F3DAA7D614DCFB4D535DC62F5729', secret='HQWrpLeDdSzu5P7riTF7uFD7jo0mbojaYLtJ8+bX')
+# rsconnect::setAccountInfo(name='utrecht-university', token='AADD9D8B4B9B37A5775BE7688CE2E12B', secret='uXJlWQKhgnq0RCBAvllAVxV1qkbVpZ7VG2NvXMzl')
+rsconnect::setAccountInfo(name='utrecht-university', token='73C585A657877C8CD0C34589081DA9B1', secret='dBmYhchEcru8h7TYCeNBhe3jHASZzTteW0qRksl2')
+
+# NEW: UTRECHT UNIVERSITY NAMING CONVENTIONS
+#
+# The Shiny app server consists of a single online environment where everyone with 
+# a valid toke can upload and manage their applications. One downside of this open 
+# environment is that it is possible to overwrite other users existing applications 
+# when uploading a new application with the same name (regardless of the token being used). 
+# To prevent accidental substitutions of other users apps, we would like to ask all 
+# our users to adhere to the following naming convention. Name each app after your 
+# course or project, followed by the application name: 
+#   [Course/project name]_[Name of the project] (i.e. M&S1_correlation). 
+# This should prevent Apps being accidentally replaced. 
+# If you do get a message about overwriting applications when first 
+# uploading your App, please select a different name or contact us for assistance.
+
+
+
+
+# local trace
+options(shiny.trace=TRUE)
+
+# check app dependencies
+rsconnect::appDependencies('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/stanshinytest')
+rsconnect::appDependencies('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/regression_elicitation')
+
+
+# releases
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/SBC_shinyapp', account = "utrecht-university",
+                     appName = "SBC_plots")
+# for dveen.shinyapps.io/...
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/KLapp',account="dveen")
+# for MSchristmas.shinyapps.io/...
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/KLapp',account="utrecht-university")
+#rsconnect::setAccountInfo(name='utrecht-university', token='AADD9D8B4B9B37A5775BE7688CE2E12B', secret='uXJlWQKhgnq0RCBAvllAVxV1qkbVpZ7VG2NvXMzl')
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/Elicitation',account="utrecht-university")
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/stanshinytest',
+                     account="dveen",
+                     logLevel = "verbose" )
+rsconnect::deployApp('C:/Users/5507553/surfdrive/PhD werk/R working directory/shinyapps/regression_elicitation',
+                     account="dveen", appName = "phd_Duco_elicitatie",
+                     logLevel = "verbose" )
+
+
+# check logs
+rsconnect::showLogs(appName = "hello")

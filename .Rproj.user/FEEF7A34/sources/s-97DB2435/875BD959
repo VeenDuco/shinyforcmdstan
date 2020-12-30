@@ -1,0 +1,25 @@
+{
+    "id": "875BD959",
+    "path": "~/OneDrive/Werk/Programming/shinyapps/shinyforcmdstan/cmdstanExample.R",
+    "project_path": "cmdstanExample.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1609158505714.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "2,20",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1609170287,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1609170287149,
+    "read_only": false,
+    "read_only_alternatives": []
+}
