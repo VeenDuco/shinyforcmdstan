@@ -21,6 +21,7 @@ rsconnect::setAccountInfo(name='utrecht-university', token='73C585A657877C8CD0C3
 
 
 
+rsconnect::deployApp("/Users/dveen5/OneDrive/Werk/Programming/shinyapps/shinyforcmdstanRelease", appName = "shinyforcmdstan")
 
 # local trace
 options(shiny.trace=TRUE)

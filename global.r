@@ -11,6 +11,6 @@ library(shinyjs)
 .cloglog <- function(x) log(-log1p(-x))
 .square <- function(x) x^2
 
-sso <- shinystan::eight_schools
+# sso <- shinystan::eight_schools
 
 

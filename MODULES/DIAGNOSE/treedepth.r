@@ -14,7 +14,7 @@ treedepthUI <- function(id){
                      value = 0,
                      min = 0,
                      # don't allow changing chains if only 1 chain
-                     max = ifelse(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain == 1, 0, shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain)
+                     max = ifelse(sso@n_chain == 1, 0, sso@n_chain)
                    )
                )
         )
@@ -60,23 +60,23 @@ treedepth <- function(input, output, session){
     
     if(chain != 0) {
       mcmc_nuts_treedepth(
-        x = nuts_params(list(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params[[chain]]) %>%
+        x = nuts_params(list(sso@sampler_params[[chain]]) %>%
                           lapply(., as.data.frame) %>%
-                          lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                          lapply(., filter, row_number() > sso@n_warmup) %>%
                           lapply(., as.matrix)),
-        lp = data.frame(Iteration = rep(1:(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup), 1),
-                        Value = c(shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup + 1):shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, chain,"log-posterior"]),
-                        Chain = rep(chain, each = (shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup))) 
+        lp = data.frame(Iteration = rep(1:(sso@n_iter - sso@n_warmup), 1),
+                        Value = c(sso@posterior_sample[(sso@n_warmup + 1):sso@n_iter, chain,"log-posterior"]),
+                        Chain = rep(chain, each = (sso@n_iter - sso@n_warmup))) 
       ) #+ theme_dark()#eval(parse(text = switch(1, "theme_default()", "theme_classic()")))
     } else {
       mcmc_nuts_treedepth(
-        x = nuts_params(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params %>%
+        x = nuts_params(sso@sampler_params %>%
                           lapply(., as.data.frame) %>%
-                          lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                          lapply(., filter, row_number() > sso@n_warmup) %>%
                           lapply(., as.matrix)),
-        lp = data.frame(Iteration = rep(1:(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup), shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain),
-                        Value = c(shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup + 1):shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, ,"log-posterior"]),
-                        Chain = rep(1:shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain, each = (shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup))) 
+        lp = data.frame(Iteration = rep(1:(sso@n_iter - sso@n_warmup), sso@n_chain),
+                        Value = c(sso@posterior_sample[(sso@n_warmup + 1):sso@n_iter, ,"log-posterior"]),
+                        Chain = rep(1:sso@n_chain, each = (sso@n_iter - sso@n_warmup))) 
       ) #+ theme_dark() #eval(parse(text = switch(1, "theme_default()", "theme_classic()")))
     }
     
