@@ -10,8 +10,8 @@ tracePlotUI <- function(id){
                    inputId = ns("diagnostic_param"),
                    label = h5("Parameter"),
                    multiple = TRUE,
-                   choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   selected = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:2]]
+                   choices = .make_param_list_with_groups(sso),
+                   selected = sso@param_names[order(sso@summary[, "n_eff"])[1:2]]
                  )
                )
         ),
@@ -25,7 +25,7 @@ tracePlotUI <- function(id){
                        value = 0,
                        min = 0,
                        # don't allow changing chains if only 1 chain
-                       max = ifelse(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain == 1, 0, shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain)
+                       max = ifelse(sso@n_chain == 1, 0, sso@n_chain)
                      )
                  )
         )
@@ -54,7 +54,7 @@ tracePlot <- function(input, output, session){
   visualOptions <- callModule(plotOptions, "options", divOptions = TRUE)
   chain <- reactive(input$diagnostic_chain)
   param <- debounce(reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                               all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names))),
+                                                               all_param_names = sso@param_names))),
                     500)
   
   include <- reactive(input$report)
@@ -74,29 +74,29 @@ tracePlot <- function(input, output, session){
     validate(
       need(length(parameters) > 0, "Select at least one parameter.")
     )
-    if(shinystan:::.sso_env$.SHINYSTAN_OBJECT@stan_method == "sampling"){
+    if(sso@stan_method == "sampling"){
       mcmc_trace( if(chain != 0) {
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, chain, ]
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, chain, ]
       } else {
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ]
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ]
       }, pars = parameters,
       np = if(chain != 0){
-        nuts_params(list(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params[[chain]]) %>%
+        nuts_params(list(sso@sampler_params[[chain]]) %>%
                       lapply(., as.data.frame) %>%
-                      lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                      lapply(., filter, row_number() > sso@n_warmup) %>%
                       lapply(., as.matrix))
       } else {
-        nuts_params(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params %>%
+        nuts_params(sso@sampler_params %>%
                       lapply(., as.data.frame) %>%
-                      lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                      lapply(., filter, row_number() > sso@n_warmup) %>%
                       lapply(., as.matrix))
       },
       np_style = scatter_style_np(div_color = div_color, div_size = .25)
       )} else {
         mcmc_trace( if(chain != 0) {
-          shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, chain, ]
+          sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, chain, ]
         } else {
-          shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ]
+          sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ]
         }, pars = parameters,
         np_style = scatter_style_np(div_color = div_color, div_size = .25)) 
       }

@@ -10,8 +10,8 @@ autoCorrelationUI <- function(id){
                    inputId = ns("diagnostic_param"),
                    label = h5("Parameter"),
                    multiple = TRUE,
-                   choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   selected = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:2]]
+                   choices = .make_param_list_with_groups(sso),
+                   selected = sso@param_names[order(sso@summary[, "n_eff"])[1:2]]
                  )
                )
         ),
@@ -30,7 +30,7 @@ autoCorrelationUI <- function(id){
                        label = h5("Lags"),
                        value = 20, 
                        min = 1,
-                       max = (shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup - 2),
+                       max = (sso@n_iter - sso@n_warmup - 2),
                        step = 1
                      )
                  )
@@ -44,7 +44,7 @@ autoCorrelationUI <- function(id){
                      value = 0,
                      min = 0,
                      # don't allow changing chains if only 1 chain
-                     max = ifelse(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain == 1, 0, shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain)
+                     max = ifelse(sso@n_chain == 1, 0, sso@n_chain)
                    )
                )
         )
@@ -72,7 +72,7 @@ autoCorrelation <- function(input, output, session){
   visualOptions <- callModule(plotOptions, "options")  
   chain <- reactive(input$diagnostic_chain)
   param <- debounce(reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                               all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names))),
+                                                               all_param_names = sso@param_names))),
                     500)
   observeEvent(input$autoLags, {
     shinyjs::toggleState("diagnostic_lags")
@@ -80,7 +80,7 @@ autoCorrelation <- function(input, output, session){
   # Geyer truncation rule, see: https://discourse.mc-stan.org/t/shinystan-3-0-alpha-test/12664/9
   lags <- reactive({
     if(input$autoLags == "No"){
-      geyer_truncation <- shinystan:::.max_t_sso(shinystan:::.sso_env$.SHINYSTAN_OBJECT, param(), chains = chain())
+      geyer_truncation <- shinystan:::.max_t_sso(sso, param(), chains = chain())
       ifelse(geyer_truncation > 20, 
              yes = 20,
              no = geyer_truncation)
@@ -113,12 +113,12 @@ autoCorrelation <- function(input, output, session){
       need(length(parameters) > 0, "Select at least one parameter."),
       need(is.na(chain) == FALSE, "Select chains"),
       need(is.null(lags) == FALSE & is.na(lags) == FALSE, "Select lags"),
-      need(lags > 0 & lags < (shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup - 1), "Number of lags is inappropriate.")
+      need(lags > 0 & lags < (sso@n_iter - sso@n_warmup - 1), "Number of lags is inappropriate.")
     )
     mcmc_acf_bar( if(chain != 0) {
-      shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, chain, ]
+      sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, chain, ]
     } else {
-      shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ]
+      sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ]
     }, pars = parameters,
     lags = lags
     )

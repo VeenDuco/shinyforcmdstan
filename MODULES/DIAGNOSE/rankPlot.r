@@ -10,8 +10,8 @@ rankPlotUI <- function(id){
                    inputId = ns("diagnostic_param"),
                    label = h5("Parameter"),
                    multiple = TRUE,
-                   choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   selected = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:2]]
+                   choices = .make_param_list_with_groups(sso),
+                   selected = sso@param_names[order(sso@summary[, "n_eff"])[1:2]]
                  )
                )
         ),
@@ -47,7 +47,7 @@ rankPlot <- function(input, output, session){
     
   visualOptions <- callModule(plotOptions, "options")
   param <- debounce(reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                               all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names))),
+                                                               all_param_names = sso@param_names))),
                     500)
   
   include <- reactive(input$report)
@@ -64,11 +64,11 @@ rankPlot <- function(input, output, session){
     )
     if(input$selectStat == "Histogram"){
       mcmc_rank_hist( 
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ], 
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ], 
         pars = parameters) 
     } else {
       mcmc_rank_overlay( 
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ], 
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ], 
         pars = parameters) 
     }
   }  

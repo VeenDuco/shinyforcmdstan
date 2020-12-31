@@ -10,11 +10,11 @@ pairsUI <- function(id){
                    inputId = ns("diagnostic_param"),
                    label = h5("Parameter"),
                    multiple = TRUE,
-                   choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   selected = if(length(shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names) > 4) {
-                     shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:4]]
+                   choices = .make_param_list_with_groups(sso),
+                   selected = if(length(sso@param_names) > 4) {
+                     sso@param_names[order(sso@summary[, "n_eff"])[1:4]]
                    }  else {
-                     shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])]
+                     sso@param_names[order(sso@summary[, "n_eff"])]
                    } 
                  )
                )
@@ -31,7 +31,7 @@ pairsUI <- function(id){
                        value = 0,
                        min = 0,
                        # don't allow changing chains if only 1 chain
-                       max = ifelse(shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain == 1, 0, shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain)
+                       max = ifelse(sso@n_chain == 1, 0, sso@n_chain)
                      )
                  )
         )
@@ -51,7 +51,7 @@ pairs <- function(input, output, session){
   visualOptions <- callModule(plotOptions, "options", divOptions = TRUE)
   chain <- reactive(input$diagnostic_chain)
   param <- reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                      all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names)))
+                                                      all_param_names = sso@param_names)))
   
   observe({
     toggle("caption", condition = input$showCaption)
@@ -90,21 +90,21 @@ pairs <- function(input, output, session){
       
       if(chain != 0) {
         mcmc_pairs(
-          x = shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, chain, ],
+          x = sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, chain, ],
           pars = parameters,
-          np = nuts_params(list(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params[[chain]]) %>%
+          np = nuts_params(list(sso@sampler_params[[chain]]) %>%
                              lapply(., as.data.frame) %>%
-                             lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                             lapply(., filter, row_number() > sso@n_warmup) %>%
                              lapply(., as.matrix)), 
           np_style = pairs_style_np(div_color = div_color, div_alpha = 0.8)
         )
       } else {
         mcmc_pairs(
-          x = shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ],
+          x = sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ],
           pars = parameters,
-          np = nuts_params(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params %>%
+          np = nuts_params(sso@sampler_params %>%
                              lapply(., as.data.frame) %>%
-                             lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) %>%
+                             lapply(., filter, row_number() > sso@n_warmup) %>%
                              lapply(., as.matrix)), 
           np_style = pairs_style_np(div_color = div_color, div_alpha = 0.8)
         )

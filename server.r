@@ -10,18 +10,18 @@ server <- function(input, output, session) {
   source("MODULES/DIAGNOSE/diagnoseHomepage.R", local = TRUE)
   
   source("MODULES/DIAGNOSE/divergentScatter.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/divergentTransitions.r", local = TRUE)
+  source("MODULES/DIAGNOSE/divergentTransitions.r", local = TRUE)
   source("MODULES/DIAGNOSE/energy.r", local = TRUE)
   source("MODULES/DIAGNOSE/treedepth.r", local = TRUE)
   source("MODULES/DIAGNOSE/stepSize.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/parallelCoordinates.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/pairs.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/acceptance.r", local = TRUE)
-  # 
-  # source("MODULES/DIAGNOSE/tracePlot.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
+  source("MODULES/DIAGNOSE/parallelCoordinates.r", local = TRUE)
+  source("MODULES/DIAGNOSE/pairs.r", local = TRUE)
+  source("MODULES/DIAGNOSE/acceptance.r", local = TRUE)
+
+  source("MODULES/DIAGNOSE/tracePlot.r", local = TRUE)
+  source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
+  source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
+  source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
   # 
   # source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
   # source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
@@ -195,7 +195,9 @@ server <- function(input, output, session) {
   # # diagnose tab
   # observeEvent(input$cmdstanInput,
   #              callModule(diagnose, "diagnoseHomepage"))
-  callModule(diagnose, "diagnoseHomepage")
+  observeEvent(input$cmdstanInput, {
+    callModule(diagnose, "diagnoseHomepage")
+  })
   # # estimate tab
   # callModule(estimate, "estimateHomepage")
   # # about tab

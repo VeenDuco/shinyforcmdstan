@@ -3,22 +3,22 @@
     "path": "~/OneDrive/Werk/Programming/shinyapps/shinyforcmdstan/ui.r",
     "project_path": "ui.r",
     "type": "r_source",
-    "hash": "2552856841",
+    "hash": "2033682209",
     "contents": "",
     "dirty": false,
     "created": 1609170402859.0,
     "source_on_save": false,
-    "relative_order": 6,
+    "relative_order": 3,
     "properties": {
-        "cursorPosition": "10,35",
-        "scrollLine": "0"
+        "cursorPosition": "18,0",
+        "scrollLine": "15"
     },
     "folds": "",
-    "lastKnownWriteTime": 1609332976,
+    "lastKnownWriteTime": 1609419052,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1609332976231,
+    "last_content_update": 1609419052468,
     "read_only": false,
     "read_only_alternatives": []
 }

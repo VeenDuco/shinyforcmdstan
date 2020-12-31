@@ -9,18 +9,18 @@ source("MODULES/UTILS/plotOptions.R", local = TRUE)
 source("MODULES/DIAGNOSE/diagnoseHomepage.R", local = TRUE)
 
 source("MODULES/DIAGNOSE/divergentScatter.r", local = TRUE)
-# source("MODULES/DIAGNOSE/divergentTransitions.r", local = TRUE)
+source("MODULES/DIAGNOSE/divergentTransitions.r", local = TRUE)
 source("MODULES/DIAGNOSE/energy.r", local = TRUE)
 source("MODULES/DIAGNOSE/treedepth.r", local = TRUE)
 source("MODULES/DIAGNOSE/stepSize.r", local = TRUE)
-# source("MODULES/DIAGNOSE/parallelCoordinates.r", local = TRUE)
-# source("MODULES/DIAGNOSE/pairs.r", local = TRUE)
-# source("MODULES/DIAGNOSE/acceptance.r", local = TRUE)
-# 
-# source("MODULES/DIAGNOSE/tracePlot.r", local = TRUE)
-# source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
-# source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
-# source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
+source("MODULES/DIAGNOSE/parallelCoordinates.r", local = TRUE)
+source("MODULES/DIAGNOSE/pairs.r", local = TRUE)
+source("MODULES/DIAGNOSE/acceptance.r", local = TRUE)
+
+source("MODULES/DIAGNOSE/tracePlot.r", local = TRUE)
+source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
+source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
+source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
 # 
 # source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
 # source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
@@ -96,13 +96,14 @@ tagList(
         br(),
         br(),
         column(width = 12, align = "center",
-        h5("Don't go to other pages before uploading your data."),
-        h5("That currently breaks the working of this version."),
+        # h5("Don't go to other pages before uploading your data."),
+        # h5("That currently breaks the working of this version."),
         h5("Please first upload your .csv file that you obtained using cmdstan."),
+        h5("After the upload is complete, the shinystan functionalities become available."),
         br(),
         br(),
         fileInput("cmdstanInput", "Upload your csv file from cmdstan",
-                  multiple = FALSE,
+                  multiple = TRUE,
                   accept = ".csv"),
         br(),
         textOutput("uploadConfirmation")

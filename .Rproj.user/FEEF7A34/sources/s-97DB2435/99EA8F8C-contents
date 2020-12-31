@@ -14,19 +14,19 @@ diagnoseUI <- function(id){
 
 diagnose <- function(input, output, session){
   
-    # getParcoordPlot <- callModule(parallelCoordinates, "parallelCoordinates")
-    # getPairsPlot <- callModule(pairs, "pairs")
-    # getDivergentTransitionsPlot <- callModule(divergentTransitions, "divergentTransitions")
+    getParcoordPlot <- callModule(parallelCoordinates, "parallelCoordinates")
+    getPairsPlot <- callModule(pairs, "pairs")
+    getDivergentTransitionsPlot <- callModule(divergentTransitions, "divergentTransitions")
     getDivergentScatterPlot <- callModule(divergentScatter, "divergentScatter")
     getEnergyPlot <- callModule(energy, "energy")
     getTreedepthPlot <- callModule(treedepth, "treedepth")
     getStepSizePlot <- callModule(stepSize, "stepSize")
-    # getAcceptancePlot <- callModule(acceptance, "acceptance")
+    getAcceptancePlot <- callModule(acceptance, "acceptance")
     # 
-    # getTracePlot <- callModule(tracePlot, "tracePlot")  
-    # getRankPlot <- callModule(rankPlot, "rankPlot")  
-    # getRhatNeffSEmeanPlots <- callModule(rhat_n_eff_se_mean, "rhat_n_eff_se_mean")
-    # getAutoCorrelationPlot <- callModule(autoCorrelation, "autoCorrelation")
+    getTracePlot <- callModule(tracePlot, "tracePlot")
+    getRankPlot <- callModule(rankPlot, "rankPlot")
+    getRhatNeffSEmeanPlots <- callModule(rhat_n_eff_se_mean, "rhat_n_eff_se_mean")
+    getAutoCorrelationPlot <- callModule(autoCorrelation, "autoCorrelation")
     # 
     # callModule(statsTableHMC, "statsTableHMC")
     # callModule(rhat_n_eff_se_mean_stats, "rhat_n_eff_se_mean_stats")
@@ -67,21 +67,21 @@ diagnose <- function(input, output, session){
               id = session$ns("divergentScatterTab"),
               divergentScatterUI(session$ns("divergentScatter"))
             ),
-            # tabPanel(
-            #   title = "Parallel Coordinates",
-            #   id = session$ns("parallelCoordinatesTab"),
-            #   parallelCoordinatesUI(session$ns("parallelCoordinates"))
-            # ),
-            # tabPanel(
-            #   title = "Pairs",
-            #   id = session$ns("pairsTab"),
-            #   pairsUI(session$ns("pairs"))
-            # ),
-            # tabPanel(
-            #   title = "Divergence Information",
-            #   id = session$ns("divergentTransitionsTab"),
-            #   divergentTransitionsUI(session$ns("divergentTransitions"))
-            # ),
+            tabPanel(
+              title = "Parallel Coordinates",
+              id = session$ns("parallelCoordinatesTab"),
+              parallelCoordinatesUI(session$ns("parallelCoordinates"))
+            ),
+            tabPanel(
+              title = "Pairs",
+              id = session$ns("pairsTab"),
+              pairsUI(session$ns("pairs"))
+            ),
+            tabPanel(
+              title = "Divergence Information",
+              id = session$ns("divergentTransitionsTab"),
+              divergentTransitionsUI(session$ns("divergentTransitions"))
+            ),
             tabPanel(
               title = "Energy Information",
               id = session$ns("energyTab"),
@@ -96,34 +96,34 @@ diagnose <- function(input, output, session){
               title = "Step Size Information",
               id = session$ns("stepSizeTab"),
               stepSizeUI(session$ns("stepSize"))
+            ),
+            tabPanel(
+              title = "Acceptance Information",
+              id = session$ns("acceptanceTab"),
+              acceptanceUI(session$ns("acceptance"))
+            ),
+            "MCMC",
+            tabPanel(
+              title = "Autocorrelation",
+              id = session$ns("autocorrelationTab"),
+              autoCorrelationUI(session$ns("autoCorrelation"))
+            ),
+            tabPanel(
+              title = "Rank Plots",
+              id = session$ns("rankTab"),
+              rankPlotUI(session$ns("rankPlot"))
+            ),
+            tabPanel(
+              title = withMathJax("\\(\\hat{R}, \\text{ } n_{eff}, \\text{ se}_{mean}\\)"),
+              id = session$ns("rhat_n_eff_se_meanTab"),
+              value = "rhat_neff_se_mean_plot_tab",
+              rhat_n_eff_se_meanUI(session$ns("rhat_n_eff_se_mean"))
+            ),
+            tabPanel(
+              title = "Trace Plots",
+              id = session$ns("traceTab"),
+              tracePlotUI(session$ns("tracePlot"))
             )
-            # tabPanel(
-            #   title = "Acceptance Information",
-            #   id = session$ns("acceptanceTab"),
-            #   acceptanceUI(session$ns("acceptance"))
-            # ),
-            # "MCMC",
-            # tabPanel(
-            #   title = "Autocorrelation",
-            #   id = session$ns("autocorrelationTab"),
-            #   autoCorrelationUI(session$ns("autoCorrelation"))
-            # ),
-            # tabPanel(
-            #   title = "Rank Plots",
-            #   id = session$ns("rankTab"),
-            #   rankPlotUI(session$ns("rankPlot"))
-            # ),
-            # tabPanel(
-            #   title = withMathJax("\\(\\hat{R}, \\text{ } n_{eff}, \\text{ se}_{mean}\\)"),
-            #   id = session$ns("rhat_n_eff_se_meanTab"),
-            #   value = "rhat_neff_se_mean_plot_tab",
-            #   rhat_n_eff_se_meanUI(session$ns("rhat_n_eff_se_mean"))
-            # ),
-            # tabPanel(
-            #   title = "Trace Plots",
-            #   id = session$ns("traceTab"),
-            #   tracePlotUI(session$ns("tracePlot"))
-            # )
           )
         ),
         tabPanel(
