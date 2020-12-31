@@ -26,7 +26,7 @@ reportUI <- function(id) {
                        label = h5("How many?"),
                        value = 3, 
                        min = 1,
-                       max = (shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup - 2),
+                       max = (sso@n_iter - sso@n_warmup - 2),
                        step = 1
                      )
                  )
@@ -38,9 +38,9 @@ reportUI <- function(id) {
                    inputId = ns("named_param"),
                    label = h5("Parameter"),
                    multiple = TRUE,
-                   # choices = .make_param_list(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   choices = unlist(.make_param_list(shinystan:::.sso_env$.SHINYSTAN_OBJECT))[-which(unlist(.make_param_list(shinystan:::.sso_env$.SHINYSTAN_OBJECT)) == "log-posterior")], 
-                   selected = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:2]]
+                   # choices = .make_param_list(sso),
+                   choices = unlist(.make_param_list(sso))[-which(unlist(.make_param_list(sso)) == "log-posterior")], 
+                   selected = sso@param_names[order(sso@summary[, "n_eff"])[1:2]]
                  )
                )
         )
@@ -101,7 +101,7 @@ report <- function(input, output, session, ggplotsList, reportType, ...) {
         
       } else {
         
-        shinystan::generate_report(sso = shinystan:::.sso_env$.SHINYSTAN_OBJECT,
+        generate_report(sso = sso,
                                    n_param = nParam(),
                                    pars = pars(),
                                    output_format = formatType(),

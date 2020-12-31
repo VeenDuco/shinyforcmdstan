@@ -49,7 +49,7 @@ diagnose <- function(input, output, session){
     # })
     # 
     # 
-    # callModule(report, "report", ggplotsList = getDiagnosePlots, reportType = "diagnose")
+    callModule(report, "report", ggplotsList = getDiagnosePlots, reportType = "diagnose")
   
   output$HMC <- renderUI({
     tagList(
@@ -144,11 +144,11 @@ diagnose <- function(input, output, session){
               rhat_n_eff_se_mean_statsUI(session$ns("rhat_n_eff_se_mean_stats"))
             )
           )
+        ),
+        tabPanel(
+          title = "Report",
+          reportUI(session$ns("report"))
         )
-        # tabPanel(
-        #   title = "Report",
-        #   reportUI(session$ns("report"))
-        # )
       )
     )
   })

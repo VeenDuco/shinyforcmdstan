@@ -393,3 +393,157 @@ scheme_level_names <- function() {
 dont_expand_y_axis <- function(expand = c(0,0)) {
   scale_y_continuous(expand = expand)
 }
+
+## sso check needed for drop parameters
+# check which shinystan created a shinystan object
+sso_version <- function(sso) {
+  ver <- sso@misc[["sso_version"]]
+  if (!is.null(ver)) {
+    package_version(ver)
+  } else {
+    package_version("2.0")
+  }
+}
+
+# check object types
+sso_check <- function(sso) {
+  if (!is.shinystan(sso)) {
+    stop("Please specify a shinystan object.", call. = FALSE)
+  } else if (sso_version(sso) < utils::packageVersion("shinystan")) {
+    stop(
+      "Your shinystan object was created with a previous version of shinystan. ",
+      "Please use the 'update_sso' function to update your object.",
+      call. = FALSE
+    )
+  }
+  invisible(TRUE)
+}
+
+
+## drop parameters; update needed for generate report
+
+drop_parameters <- function(sso, pars) {
+  sso_check(sso)
+  stopifnot(is.character(pars))
+  if (any(c("log-posterior", "lp__") %in% pars))
+    stop("log-posterior can't be dropped.")
+  
+  # any_indiv_els <- any(grepl("[", pars, fixed = TRUE))
+  # if (any_indiv_els)
+  #   stop("Currently, individual elements of non-scalar parameters can't be removed.")
+  # 
+  any_dimnames_in_pars <- any(names(sso@param_dims) %in% pars)
+  if (any_dimnames_in_pars) {
+    param_dims <- slot(sso, "param_dims")
+    param_names <- slot(sso, "param_names")
+    pd <- which(names(param_dims) %in% pars)
+    nms <- names(param_dims[pd])
+    for (j in seq_along(nms)) {
+      if (!nms[j] %in% param_names) {
+        pars <- pars[pars != nms[j]]
+        tmp <- grep(paste0(nms[j], "["), param_names, fixed = TRUE, value = TRUE)
+        pars <- c(pars, tmp)
+      }
+    }
+    slot(sso, "param_dims") <- slot(sso, "param_dims")[-pd]
+  }
+  
+  sel <- match(pars, slot(sso, "param_names"))
+  if (!any_dimnames_in_pars && all(is.na(sel))) {
+    stop("No matches for 'pars' were found.", call. = FALSE)
+  } else if (any(is.na(sel))) {
+    warning(paste(
+      "Some 'pars' not found and ignored:",
+      paste(pars[is.na(sel)], collapse = ", ")
+    ))
+  }
+  
+  .drop_parameters(sso, na.omit(sel))
+}
+
+
+# @param rmv A vector of indices indicating the positions of parameters to be
+#   removed
+.drop_parameters <- function(sso, rmv) {
+  slot(sso, "param_names") <- slot(sso, "param_names")[-rmv]
+  slot(sso, "posterior_sample") <- slot(sso, "posterior_sample")[, , -rmv, drop = FALSE]
+  slot(sso, "summary") <- slot(sso, "summary")[-rmv, , drop = FALSE]
+  sso
+}
+
+
+## generate report
+
+generate_report <- function (sso, n_param = 3, pars = NULL, output_format = "html_document", 
+                             view = TRUE, report_type = "diagnose") {
+  if(class(sso) != "shinystan") stop("Object is not of class 'shinystan'.")
+  if(sso@misc$stan_algorithm == "variational" | sso@misc$stan_algorithm == "fullrank"){
+    stop("Currently no reports available for variational inference.")
+  } 
+  if(is.null(pars) == FALSE & class(pars) != "character") stop("pars should be a character vector.")
+  if(is.null(pars) == FALSE & all(pars %in% sso@param_names) == FALSE) stop("Invalid parameters in pars.")
+  if(report_type %in% c("estimate", "diagnose", "both") == FALSE) stop("Invalid input for report_type.")
+  
+  
+  nopars <- missing(pars) | is.null(pars)
+  
+  if(nopars){
+    selected_parameters <- sso@param_names[order(sso@summary[, "n_eff"])] 
+    selected_parameters <- selected_parameters[-which(selected_parameters == "log-posterior")]
+    
+    if(n_param == "all") n_param <- length(selected_parameters)
+    if(n_param > length(selected_parameters)) n_param <- length(selected_parameters)
+    if(n_param != length(selected_parameters)){
+      sso <- drop_parameters(sso, pars = selected_parameters[-c(1:n_param)])
+    }
+  } else {
+    selected_parameters <- sso@param_names[order(sso@summary[, "n_eff"])] 
+    selected_parameters <- selected_parameters[-which(selected_parameters == "log-posterior")]
+    selected_parameters <- c(pars, selected_parameters[-which(selected_parameters %in% pars)])
+    n_param <- length(pars)
+    sso <- drop_parameters(sso, pars = selected_parameters[-which(selected_parameters %in% pars)])
+  }
+  
+  
+  
+  if(report_type == "diagnose"){
+    path <- rmarkdown::render(input = paste0(getwd(), "/reports/generate_report_diagnostics.Rmd"),
+                              output_format = output_format, 
+                              output_dir = getwd(),
+                              output_file = "ShinyStan_diagnostics_report")  
+  }
+  
+  if(report_type == "estimate" ) {
+    path <- rmarkdown::render(input = paste0(getwd(), "/reports/generate_report_estimates.Rmd"),
+                              output_format = output_format, 
+                              output_dir = getwd(),
+                              output_file = "ShinyStan_estimates_report")
+  }
+  
+  if(report_type == "both") {
+    path1 <- rmarkdown::render(input = paste0(getwd(), "/reports/generate_report_diagnostics.Rmd"), 
+                               output_format = output_format, 
+                               output_dir = getwd(),
+                               output_file = "ShinyStan_diagnostics_report")  
+    path2 <- rmarkdown::render(input = paste0(getwd(), "/reports/generate_report_estimates.Rmd"),
+                               output_format = output_format, 
+                               output_dir = getwd(),
+                               output_file = "ShinyStan_estimates_report")
+  }
+  
+  if(report_type == "diagnose" | report_type == "estimate"){
+    message("File saved to ", path)
+    if (view) {
+      system2("open", shQuote(path))
+    }
+  }
+  
+  if(report_type == "both"){
+    message("Files saved to ", path1, " and ", path2)
+    if (view) {
+      system2("open", shQuote(path1))
+      system2("open", shQuote(path2))
+    }
+  }
+  
+}

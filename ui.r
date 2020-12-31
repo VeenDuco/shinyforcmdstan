@@ -1,6 +1,6 @@
 # utilities
 source("MODULES/UTILS/plotOptions.R", local = TRUE)
-# source("MODULES/UTILS/report.R", local = TRUE)
+source("MODULES/UTILS/report.R", local = TRUE)
 
 # home tab
 # source("MODULES/HOME/warnings.r", local = TRUE)
