@@ -9,11 +9,11 @@ rhat_n_eff_se_mean_statsUI <- function(id){
                  inputId = ns("diagnostic_param"),
                  label = h5("Parameter"),
                  multiple = TRUE,
-                 choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                 selected = if(length(shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names) > 10) {
-                   shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])[1:10]]
+                 choices = .make_param_list_with_groups(sso),
+                 selected = if(length(sso@param_names) > 10) {
+                   sso@param_names[order(sso@summary[, "n_eff"])[1:10]]
                  }  else {
-                   shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[order(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, "n_eff"])]
+                   sso@param_names[order(sso@summary[, "n_eff"])]
                  } 
                )
         ), 
@@ -43,16 +43,16 @@ rhat_n_eff_se_mean_statsUI <- function(id){
 rhat_n_eff_se_mean_stats <- function(input, output, session){
   
   param <- reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                      all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names)))
+                                                      all_param_names = sso@param_names)))
   
   digits <- reactive(input$sampler_digits)
   
   MCMCtable <- reactive({
-    out <- shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[, c("Rhat", "n_eff", "se_mean", "sd")]
-    out[, 2] <- out[, 2] / ((shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter - shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) * shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_chain)
+    out <- sso@summary[, c("Rhat", "n_eff", "se_mean", "sd")]
+    out[, 2] <- out[, 2] / ((sso@n_iter - sso@n_warmup) * sso@n_chain)
     out[, 3] <- out[, 3] / out[, 4]
     out <- out[param(), 1:3]
-    out <- cbind(out, as.matrix(shinystan:::.sso_env$.SHINYSTAN_OBJECT@monitor_summary)[, c("n_eff", "Bulk_ESS", "Tail_ESS")][param(), ])
+    out <- cbind(out, as.matrix(sso_monitor_summary)[, c("n_eff", "Bulk_ESS", "Tail_ESS")][param(), ])
     if(length(param()) == 1) out <- matrix(out, nrow = 1); rownames(out) <- param()
     colnames(out) <- c("Rhat", "n_eff / N", "se_mean / sd", "n_eff", "Bulk_ESS", "Tail_ESS")
     out <- round(out, digits())

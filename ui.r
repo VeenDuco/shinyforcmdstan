@@ -21,9 +21,9 @@ source("MODULES/DIAGNOSE/tracePlot.r", local = TRUE)
 source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
 source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
 source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
-# 
-# source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
-# source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
+
+source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
+source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
 # 
 # source("MODULES/DIAGNOSE/diagnosticReport.r", local = TRUE)
 

@@ -50,13 +50,13 @@ statsTableHMC <- function(input, output, session){
   
   summary_stats_sampler <- reactive({
     validate(
-      need(shinystan:::.sso_env$.SHINYSTAN_OBJECT@misc$stan_algorithm %in% c("NUTS", "HMC"), message = "Only available for algorithm = NUTS or HMC"),
+      need(sso@misc$stan_algorithm %in% c("NUTS", "HMC"), message = "Only available for algorithm = NUTS or HMC"),
       need(input$sampler_warmup, message = "Loading...")
     )
     sp <- if (input$sampler_warmup == "include")
-      shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params else shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params %>%
+      sso@sampler_params else sso@sampler_params %>%
       lapply(., as.data.frame) %>%
-      lapply(., filter, row_number() > shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup)
+      lapply(., filter, row_number() > sso@n_warmup)
     
     .sampler_stuff <- function(X, param, report) {
       sapply_funs <- function(x, fun_name) {
@@ -80,7 +80,7 @@ statsTableHMC <- function(input, output, session){
     .sampler_summary <- function(sampler_params, warmup_val,
                                  report = "average", digits = 4){ 
       
-      params <- colnames(shinystan:::.sso_env$.SHINYSTAN_OBJECT@sampler_params[[1]])
+      params <- colnames(sso@sampler_params[[1]])
       out <- sapply(params, FUN = function(p) 
         .sampler_stuff(X = sampler_params, param = p, report = report))
       
@@ -100,7 +100,7 @@ statsTableHMC <- function(input, output, session){
       ".sampler_summary",
       args = list(
         sampler_params  = sp,
-        warmup_val      = shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup,
+        warmup_val      = sso@n_warmup,
         report          = input$sampler_report,
         digits          = input$sampler_digits
       )

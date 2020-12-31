@@ -27,9 +27,9 @@ diagnose <- function(input, output, session){
     getRankPlot <- callModule(rankPlot, "rankPlot")
     getRhatNeffSEmeanPlots <- callModule(rhat_n_eff_se_mean, "rhat_n_eff_se_mean")
     getAutoCorrelationPlot <- callModule(autoCorrelation, "autoCorrelation")
-    # 
-    # callModule(statsTableHMC, "statsTableHMC")
-    # callModule(rhat_n_eff_se_mean_stats, "rhat_n_eff_se_mean_stats")
+
+    callModule(statsTableHMC, "statsTableHMC")
+    callModule(rhat_n_eff_se_mean_stats, "rhat_n_eff_se_mean_stats")
     # 
     # getDiagnosePlots <- reactive({
     #   list("divergentScatterPlot" = getDivergentScatterPlot(),
@@ -131,8 +131,20 @@ diagnose <- function(input, output, session){
           id = session$ns("numericalHMC"),
           navlistPanel(
             id = session$ns("HMC_navlist_num"),
-            "NUTS/HMC")
-          )#,
+            "NUTS/HMC",
+            tabPanel(
+              title = "All NUTS/HMC stats",
+              id = session$ns("HMCstatTab"),
+              statsTableHMCUI(session$ns("statsTableHMC"))
+            ),
+            "MCMC",
+            tabPanel(
+              title = withMathJax("\\(\\hat{R}, \\text{ } n_{eff}, \\text{ se}_{mean}\\)"),
+              id = session$ns("rhat_n_eff_se_meanTab"),
+              rhat_n_eff_se_mean_statsUI(session$ns("rhat_n_eff_se_mean_stats"))
+            )
+          )
+        )
         # tabPanel(
         #   title = "Report",
         #   reportUI(session$ns("report"))

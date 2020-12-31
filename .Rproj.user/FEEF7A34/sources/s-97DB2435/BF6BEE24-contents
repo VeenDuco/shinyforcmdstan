@@ -22,9 +22,9 @@ server <- function(input, output, session) {
   source("MODULES/DIAGNOSE/rankPlot.r", local = TRUE)
   source("MODULES/DIAGNOSE/rhat_n_eff_se_mean.r", local = TRUE)
   source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
-  # 
-  # source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
-  # source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
+
+  source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
+  source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
   # 
   # source("MODULES/DIAGNOSE/diagnosticReport.r", local = TRUE)
   
@@ -171,6 +171,7 @@ server <- function(input, output, session) {
     
     stanfit <- rstan::read_stan_csv(file$datapath)
     sso <<- shinystan::as.shinystan(stanfit)
+    sso_monitor_summary <<- data.frame(rstan::monitor(sso@posterior_sample, print = FALSE, warmup = sso@n_warmup))
     stanfit
   }
   )
