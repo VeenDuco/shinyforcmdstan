@@ -141,7 +141,7 @@ rhat_n_eff_se_mean <- function(input, output, session){
     #   bayesplot:::dont_expand_y_axis(c(0.005, 0)) + bayesplot_theme_get() +
     #   yaxis_title(FALSE) + yaxis_text(FALSE) + yaxis_ticks(FALSE) +
     #   theme(legend.position = "none")
-    shinystan:::mcmc_mcse_hist(sso@summary[, "se_mean"] / sso@summary[, "sd"])
+    mcmc_mcse_hist(sso@summary[, "se_mean"] / sso@summary[, "sd"])
     
   }
   

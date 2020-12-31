@@ -74,7 +74,7 @@ tracePlot <- function(input, output, session){
     validate(
       need(length(parameters) > 0, "Select at least one parameter.")
     )
-    if(sso@stan_method == "sampling"){
+    if(sso@misc$stan_method == "sampling"){
       mcmc_trace( if(chain != 0) {
         sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, chain, ]
       } else {

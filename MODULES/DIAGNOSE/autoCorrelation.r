@@ -80,7 +80,7 @@ autoCorrelation <- function(input, output, session){
   # Geyer truncation rule, see: https://discourse.mc-stan.org/t/shinystan-3-0-alpha-test/12664/9
   lags <- reactive({
     if(input$autoLags == "No"){
-      geyer_truncation <- shinystan:::.max_t_sso(sso, param(), chains = chain())
+      geyer_truncation <- .max_t_sso(sso, param(), chains = chain())
       ifelse(geyer_truncation > 20, 
              yes = 20,
              no = geyer_truncation)
