@@ -23,8 +23,7 @@ estimate <- function(input, output, session){
     )
   })
 
-  # callModule(report, "report", ggplotsList = getEstimatePlots, reportType = "estimate")
-  # 
+  callModule(report, "report", ggplotsList = getEstimatePlots, reportType = "estimate")
   
   output$estimateHomepage <- renderUI({
     tagList(
@@ -39,12 +38,12 @@ estimate <- function(input, output, session){
           title = "Stats",
           id = session$ns("numericalEstimateTab"),
         numericalEstimateUI(session$ns("numericalEstimate"))
-        )#,
-        # tabPanel(
-        #   title = "Report",
-        #   id = session$ns("reportTab"),
-        #   reportUI(session$ns("report"))
-        # )
+        ),
+        tabPanel(
+          title = "Report",
+          id = session$ns("reportTab"),
+          reportUI(session$ns("report"))
+        )
       )
     )
   })
