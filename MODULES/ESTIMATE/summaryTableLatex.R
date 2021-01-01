@@ -9,8 +9,8 @@ summaryTableLatexUI <- function(id){
                  inputId = ns("diagnostic_param"),
                  label = h5("Parameter"),
                  multiple = TRUE,
-                 choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                 selected = if(length(shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names) > 9) shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[1:10] else shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names
+                 choices = .make_param_list_with_groups(sso),
+                 selected = if(length(sso@param_names) > 9) sso@param_names[1:10] else sso@param_names
                )
         ), 
         column(width = 4,
@@ -33,7 +33,7 @@ summaryTableLatexUI <- function(id){
                selectizeInput(
                  ns("tex_columns"),
                  label = h5("Columns"),
-                 choices = if(shinystan:::.sso_env$.SHINYSTAN_OBJECT@stan_method == "variational"){
+                 choices = if(sso@misc$stan_method == "variational"){
                    c("Posterior mean" = "mean",
                      "Posterior standard deviation" = "sd",
                      "Quantile: 2.5%" = "2.5%",
@@ -46,11 +46,18 @@ summaryTableLatexUI <- function(id){
                    c("Posterior mean" = "mean",
                      "Monte Carlo error (MCSE) for mean" = "se_mean",
                      "Posterior standard deviation (sd)" = "sd",
-                     "Quantile: 2.5%" = "2.5%",
-                     "Quantile: 25%" = "25%",
-                     "Quantile: 50%" = "50%",
-                     "Quantile: 75%" = "75%",
-                     "Quantile: 97.5%" = "97.5%",
+                     # "Quantile: 2.5%" = "2.5%",
+                     # "Quantile: 25%" = "25%",
+                     # "Quantile: 50%" = "50%",
+                     # "Quantile: 75%" = "75%",
+                     # "Quantile: 97.5%" = "97.5%",
+                     "Quantile: 2.5%" = "X2.5.",
+                     "Quantile: 5%" = "Q5",
+                     "Quantile: 25%" = "X25.",
+                     "Quantile: 50%" = "Q50",
+                     "Quantile: 75%" = "X75.",
+                     "Quantile: 95%" = "Q95",
+                     "Quantile: 97.5%" = "X97.5.",
                      "Effective sample size (ESS)" = "n_eff",
                      "Bulk ESS" = "Bulk_ESS",
                      "Tail ESS" = "Tail_ESS",
@@ -85,7 +92,7 @@ summaryTableLatexUI <- function(id){
 summaryTableLatex <- function(input, output, session){
   
   param <- reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                      all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names)))
+                                                      all_param_names = sso@param_names)))
   digits <- reactive(input$sampler_digits)
   selectedSummaries <- reactive(input$tex_columns)
   
@@ -115,15 +122,15 @@ summaryTableLatex <- function(input, output, session){
   
   summaryStats <- reactive({
     
-    if(shinystan:::.sso_env$.SHINYSTAN_OBJECT@stan_method == "variational"){
-      select.columns <- c(which(colnames(as.matrix(shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary)) %in% input$tex_columns))
-      out <- shinystan:::.sso_env$.SHINYSTAN_OBJECT@summary[param(), select.columns, drop = FALSE]
+    if(sso@misc$stan_method == "variational"){
+      select.columns <- c(which(colnames(as.matrix(sso@summary)) %in% input$tex_columns))
+      out <- sso@summary[param(), select.columns, drop = FALSE]
       rownames(out) <- param()
       out <- round(out, digits())
       out
     } else {
-      select.columns <- c(which(colnames(as.matrix(shinystan:::.sso_env$.SHINYSTAN_OBJECT@monitor_summary)) %in% input$tex_columns))
-      out <- shinystan:::.sso_env$.SHINYSTAN_OBJECT@monitor_summary[param(), select.columns, drop = FALSE]
+      select.columns <- c(which(colnames(as.matrix(sso_monitor_summary)) %in% input$tex_columns))
+      out <- sso_monitor_summary[param(), select.columns, drop = FALSE]
       rownames(out) <- param()
       out <- round(out, digits())
       out

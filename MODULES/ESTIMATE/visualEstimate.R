@@ -42,7 +42,7 @@ visualEstimate <- function(input, output, session){
   getScatterPlot <- callModule(scatterPlot, "scatterPlot")
   getDensityPlot <- callModule(densityPlot, "densityPlot")
   getHistogramPlot <- callModule(histogramPlot, "histogramPlot")
- 
+
   return(reactive({
     list("intervalsPlot" = getIntervalsPlot(),
          "areasPlot" = getAreasPlot(),

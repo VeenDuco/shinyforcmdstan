@@ -25,22 +25,20 @@ server <- function(input, output, session) {
 
   source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
   source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
-  # 
-  # source("MODULES/DIAGNOSE/diagnosticReport.r", local = TRUE)
   
   # estimate tab
-  # source("MODULES/ESTIMATE/estimateHomepage.R", local = TRUE)
+  source("MODULES/ESTIMATE/estimateHomepage.R", local = TRUE)
   
-  # source("MODULES/ESTIMATE/visualEstimate.R", local = TRUE)
-  # source("MODULES/ESTIMATE/scatterPlot.R", local = TRUE)
-  # source("MODULES/ESTIMATE/densityPlot.R", local = TRUE)
-  # source("MODULES/ESTIMATE/histogramPlot.R", local = TRUE)
-  # source("MODULES/ESTIMATE/intervalsPlot.R", local = TRUE)
-  # source("MODULES/ESTIMATE/areasPlot.R", local = TRUE)
+  source("MODULES/ESTIMATE/visualEstimate.R", local = TRUE)
+  source("MODULES/ESTIMATE/scatterPlot.R", local = TRUE)
+  source("MODULES/ESTIMATE/densityPlot.R", local = TRUE)
+  source("MODULES/ESTIMATE/histogramPlot.R", local = TRUE)
+  source("MODULES/ESTIMATE/intervalsPlot.R", local = TRUE)
+  source("MODULES/ESTIMATE/areasPlot.R", local = TRUE)
   
-  # source("MODULES/ESTIMATE/numericalEstimate.R", local = TRUE)
-  # source("MODULES/ESTIMATE/summaryTable.R", local = TRUE)
-  # source("MODULES/ESTIMATE/summaryTableLatex.R", local = TRUE)
+  source("MODULES/ESTIMATE/numericalEstimate.R", local = TRUE)
+  source("MODULES/ESTIMATE/summaryTable.R", local = TRUE)
+  source("MODULES/ESTIMATE/summaryTableLatex.R", local = TRUE)
   
   # more tab
   source("MODULES/MORE/about.R", local = TRUE)
@@ -200,6 +198,9 @@ server <- function(input, output, session) {
     callModule(diagnose, "diagnoseHomepage")
   })
   # # estimate tab
+  observeEvent(input$cmdstanInput, {
+    callModule(estimate, "estimateHomepage")
+  })
   # callModule(estimate, "estimateHomepage")
   # # about tab
   callModule(about, "about")

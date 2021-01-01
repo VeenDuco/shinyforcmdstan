@@ -9,8 +9,8 @@ densityPlotUI <- function(id){
                    inputId = ns("diagnostic_param"),
                    label = h5("Parameters"),
                    multiple = TRUE,
-                   choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                   selected = c(shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[1])
+                   choices = .make_param_list_with_groups(sso),
+                   selected = c(sso@param_names[1])
                  )
                )
         ),
@@ -42,7 +42,7 @@ densityPlot <- function(input, output, session){
   visualOptions <- callModule(plotOptions, "options")
   
   param <- debounce(reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                               all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names))),
+                                                               all_param_names = sso@param_names))),
                     500)
   include <- reactive(input$report)
   
@@ -56,7 +56,7 @@ densityPlot <- function(input, output, session){
       need(length(param()) > 0, "Select at least one parameter.")
     )
     mcmc_dens(
-      shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ],
+      sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ],
       pars = parameters
     )
   }

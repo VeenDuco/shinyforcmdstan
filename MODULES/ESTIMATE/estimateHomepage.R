@@ -13,7 +13,7 @@ estimate <- function(input, output, session){
   
   getVisualPlots <- callModule(visualEstimate, "visualEstimate")
   callModule(numericalEstimate, "numericalEstimate")
-  
+
   getEstimatePlots <- reactive({
     list("intervalsPlot" = getVisualPlots()["intervalsPlot"],
          "areasPlot" = getVisualPlots()["areasPlot"],
@@ -22,9 +22,9 @@ estimate <- function(input, output, session){
          "histogramPlot" = getVisualPlots()["histogramPlot"]
     )
   })
-  
-  callModule(report, "report", ggplotsList = getEstimatePlots, reportType = "estimate")
-  
+
+  # callModule(report, "report", ggplotsList = getEstimatePlots, reportType = "estimate")
+  # 
   
   output$estimateHomepage <- renderUI({
     tagList(
@@ -39,12 +39,12 @@ estimate <- function(input, output, session){
           title = "Stats",
           id = session$ns("numericalEstimateTab"),
         numericalEstimateUI(session$ns("numericalEstimate"))
-        ),
-        tabPanel(
-          title = "Report",
-          id = session$ns("reportTab"),
-          reportUI(session$ns("report"))
-        )
+        )#,
+        # tabPanel(
+        #   title = "Report",
+        #   id = session$ns("reportTab"),
+        #   reportUI(session$ns("report"))
+        # )
       )
     )
   })

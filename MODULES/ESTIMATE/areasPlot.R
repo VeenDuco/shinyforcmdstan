@@ -8,8 +8,8 @@ areasPlotUI <- function(id){
                  inputId = ns("diagnostic_param"),
                  label = h5("Parameter"),
                  multiple = TRUE,
-                 choices = .make_param_list_with_groups(shinystan:::.sso_env$.SHINYSTAN_OBJECT),
-                 selected = if(length(shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names) > 9) shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names[1:10] else shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names
+                 choices = .make_param_list_with_groups(sso),
+                 selected = if(length(sso@param_names) > 9) sso@param_names[1:10] else sso@param_names
                )
         ), 
         column(width = 4),
@@ -38,7 +38,7 @@ areasPlot <- function(input, output, session){
                               intervalOptions = TRUE, areasOptions = TRUE)
   
   param <- debounce(reactive(unique(.update_params_with_groups(params = input$diagnostic_param,
-                                                               all_param_names = shinystan:::.sso_env$.SHINYSTAN_OBJECT@param_names))),
+                                                               all_param_names = sso@param_names))),
                     500)
   
   include <- reactive(input$report)
@@ -54,7 +54,7 @@ areasPlot <- function(input, output, session){
     )
     if(plotType == "Areas"){
       out <- mcmc_areas(
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ],
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ],
         pars = parameters,
         point_est = tolower(visualOptions()$point_est),
         prob = visualOptions()$inner_ci / 100,
@@ -64,7 +64,7 @@ areasPlot <- function(input, output, session){
     }
     if(plotType == "Ridges"){
       out <-   mcmc_areas_ridges(
-        shinystan:::.sso_env$.SHINYSTAN_OBJECT@posterior_sample[(1 + shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_warmup) : shinystan:::.sso_env$.SHINYSTAN_OBJECT@n_iter, , ],
+        sso@posterior_sample[(1 + sso@n_warmup) : sso@n_iter, , ],
         pars = parameters,
         prob = visualOptions()$inner_ci / 100,
         prob_outer = visualOptions()$outer_ci / 100

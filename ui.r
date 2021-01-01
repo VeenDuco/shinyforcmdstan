@@ -24,22 +24,20 @@ source("MODULES/DIAGNOSE/autoCorrelation.r", local = TRUE)
 
 source("MODULES/DIAGNOSE/statsTableHMC.r", local = TRUE)
 source("MODULES/DIAGNOSE/rhat_n_eff_se_mean_stats.r", local = TRUE)
-# 
-# source("MODULES/DIAGNOSE/diagnosticReport.r", local = TRUE)
 
 # estimate tab
-# source("MODULES/ESTIMATE/estimateHomepage.R", local = TRUE)
+source("MODULES/ESTIMATE/estimateHomepage.R", local = TRUE)
 
-# source("MODULES/ESTIMATE/visualEstimate.R", local = TRUE)
-# source("MODULES/ESTIMATE/scatterPlot.R", local = TRUE)
-# source("MODULES/ESTIMATE/densityPlot.R", local = TRUE)
-# source("MODULES/ESTIMATE/histogramPlot.R", local = TRUE)
-# source("MODULES/ESTIMATE/intervalsPlot.R", local = TRUE)
-# source("MODULES/ESTIMATE/areasPlot.R", local = TRUE)
+source("MODULES/ESTIMATE/visualEstimate.R", local = TRUE)
+source("MODULES/ESTIMATE/scatterPlot.R", local = TRUE)
+source("MODULES/ESTIMATE/densityPlot.R", local = TRUE)
+source("MODULES/ESTIMATE/histogramPlot.R", local = TRUE)
+source("MODULES/ESTIMATE/intervalsPlot.R", local = TRUE)
+source("MODULES/ESTIMATE/areasPlot.R", local = TRUE)
 
-# source("MODULES/ESTIMATE/numericalEstimate.R", local = TRUE)
-# source("MODULES/ESTIMATE/summaryTable.R", local = TRUE)
-# source("MODULES/ESTIMATE/summaryTableLatex.R", local = TRUE)
+source("MODULES/ESTIMATE/numericalEstimate.R", local = TRUE)
+source("MODULES/ESTIMATE/summaryTable.R", local = TRUE)
+source("MODULES/ESTIMATE/summaryTableLatex.R", local = TRUE)
 
 # more tab
 source("MODULES/MORE/about.R", local = TRUE)
@@ -117,13 +115,12 @@ tagList(
       icon = icon("medkit"),
       diagnoseUI("diagnoseHomepage")
     ),
-    # 
-    # #### ESTIMATE ####
-    # tabPanel(
-    #   title = "Estimate",
-    #   icon = icon("stats", lib = "glyphicon"),
-    #   estimateUI("estimateHomepage")
-    # ),
+    #### ESTIMATE ####
+    tabPanel(
+      title = "Estimate",
+      icon = icon("stats", lib = "glyphicon"),
+      estimateUI("estimateHomepage")
+    ),
     navbarMenu(
       title = "More",
 
